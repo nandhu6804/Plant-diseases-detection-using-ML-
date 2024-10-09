@@ -1,0 +1,9 @@
+tensorflow
+fastapi
+numpy
+pandas
+uvicorn
+matplotlib
+seaborn
+joblib
+python-multipart

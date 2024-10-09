@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Prediction</title>
+    <link rel="stylesheet" href="/static/Fronte.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-wrapper">
+                  <ul class="right">
+                    <li><a href="#">Home</a></li><br>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Plant Disease Prediction</h1>
+                <p>Upload an image of your plant to identify diseases.</p>
+            </div>
+        </section>
+
+        <section class="upload-section">
+            <div class="container">
+                <form id="upload-form" enctype="multipart/form-data">
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Upload Image</span>
+                            <input type="file" id="plant-image" accept="image/*" required>
+                        </div>
+                    </div><br>
+                    <button type="submit" class="btn-large">Predict</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="result-section">
+            <div class="container">
+                <p id="prediction-result"></p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.getElementById('upload-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+    
+            const fileInput = document.getElementById('plant-image');
+            const predictionResult = document.getElementById('prediction-result');
+    
+            if (fileInput.files.length === 0) {
+                predictionResult.textContent = 'Please upload an image.';
+                return;
+            }
+    
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+    
+            predictionResult.textContent = 'Processing image...';
+    
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+    
+                if (!response.ok) {
+                    throw new Error('Failed to predict. Please try again.');
+                }
+    
+                const result = await response.json();
+                predictionResult.textContent = 'Prediction: ' + result.prediction;
+            } catch (error) {
+                predictionResult.textContent = error.message;
+            }
+        });
+    </script>    
+</body>
+</html>
